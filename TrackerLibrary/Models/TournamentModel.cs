@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TrackerLibrary {
+namespace TrackerLibrary.Models {
     public class TournamentModel {
         public string TournamentName { get; set; }
         public decimal EntryFee { get; set; }
