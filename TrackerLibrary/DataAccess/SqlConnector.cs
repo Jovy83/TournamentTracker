@@ -9,6 +9,7 @@ using TrackerLibrary.Models;
 
 namespace TrackerLibrary.DataAccess {
     public class SqlConnector : IDataConnection {
+
         // TODO - Make the CreatePrize method actually save to the database
         /// <summary>
         ///  Saves a new prize to the database
@@ -30,6 +31,24 @@ namespace TrackerLibrary.DataAccess {
                 // Int32 is the standard lower case int in C#. We also define this as output like we did in our stored procedure
 
                 connection.Execute("dbo.spPrizes_Insert", p, commandType: CommandType.StoredProcedure);
+
+                model.Id = p.Get<int>("@id");
+
+                return model;
+            }
+        }
+
+        public PersonModel CreatePerson(PersonModel model) {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString("Tournaments"))) {
+                var p = new DynamicParameters();
+                p.Add("@FirstName", model.FirstName);
+                p.Add("@LastName", model.LastName);
+                p.Add("@EmailAddress", model.EmailAddress);
+                p.Add("@CellphoneNumber", model.CellphoneNumber);
+                p.Add("@id", 0, dbType: DbType.Int32, direction: ParameterDirection.Output);
+                // Int32 is the standard lower case int in C#. We also define this as output like we did in our stored procedure
+
+                connection.Execute("dbo.spPeople_Insert", p, commandType: CommandType.StoredProcedure);
 
                 model.Id = p.Get<int>("@id");
 
