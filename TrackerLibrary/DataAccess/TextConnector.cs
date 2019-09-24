@@ -41,7 +41,7 @@ namespace TrackerLibrary.DataAccess {
         }
 
         public PersonModel CreatePerson(PersonModel model) {
-            List<PersonModel> people = PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
+            List<PersonModel> people = GetPerson_All();
 
             int currentId = 1;
 
@@ -56,6 +56,10 @@ namespace TrackerLibrary.DataAccess {
             people.SaveToPeopleFile(PeopleFile);
 
             return model;
+        }
+
+        public List<PersonModel> GetPerson_All() {
+            return PeopleFile.FullFilePath().LoadFile().ConvertToPersonModels();
         }
     }
 }

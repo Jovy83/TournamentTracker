@@ -10,7 +10,9 @@ using TrackerLibrary.Models;
 namespace TrackerLibrary.DataAccess {
     public class SqlConnector : IDataConnection {
 
-        // TODO - Make the CreatePrize method actually save to the database
+        private const string db = "Tournaments";
+
+
         /// <summary>
         ///  Saves a new prize to the database
         /// </summary>
@@ -21,7 +23,7 @@ namespace TrackerLibrary.DataAccess {
             // this is the safe way to connect to our database in such a way that we don't leave connections open
             // using keyword = will destroy properly the connection object once it reaches the end of the 'using' curly brace. 
             // this way, we're preventing against memory leaks
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString("Tournaments"))) {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString(db))) {
                 var p = new DynamicParameters();
                 p.Add("@PlaceNumber", model.PlaceNumber);
                 p.Add("@PlaceName", model.PlaceName);
@@ -39,7 +41,7 @@ namespace TrackerLibrary.DataAccess {
         }
 
         public PersonModel CreatePerson(PersonModel model) {
-            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString("Tournaments"))) {
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString(db))) {
                 var p = new DynamicParameters();
                 p.Add("@FirstName", model.FirstName);
                 p.Add("@LastName", model.LastName);
@@ -54,6 +56,16 @@ namespace TrackerLibrary.DataAccess {
 
                 return model;
             }
+        }
+
+        public List<PersonModel> GetPerson_All() {
+            List<PersonModel> output;
+
+            using (IDbConnection connection = new System.Data.SqlClient.SqlConnection(GlobalConfig.CnnString(db))) {
+                output = connection.Query<PersonModel>("dbo.spPeople_GetAll").ToList();
+            }
+
+            return output;
         }
     }
 }
